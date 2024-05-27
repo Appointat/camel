@@ -76,7 +76,8 @@ class OpenAIModel(BaseModelBackend):
                 `Stream[ChatCompletionChunk]` in the stream mode.
         """
         from camel.types import ModelType
-        if self.model_type == ModelType.MISTRAL_7B:
+        if (self.model_type == ModelType.MISTRAL_7B
+            or self.model_type == ModelType.MISTRAL_LARGE):
             response = self._client.chat(
                 messages=messages,
                 model=self.model_type.value,
