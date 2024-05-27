@@ -314,7 +314,8 @@ class ChatAgent(BaseAgent):
             response = self.model_backend.run(openai_messages)
 
             from camel.types import ModelType
-            if self.model_type != ModelType.MISTRAL_7B:
+            if (self.model_type != ModelType.MISTRAL_7B
+                and self.model_type != ModelType.MISTRAL_LARGE):
                 if isinstance(response, ChatCompletion):
                     output_messages, finish_reasons, usage_dict, response_id = (
                         self.handle_batch_response(response)

@@ -40,7 +40,8 @@ class OpenAIModel(BaseModelBackend):
         super().__init__(model_type, model_config_dict)
         from mistralai.client import MistralClient
         from camel.types import ModelType
-        if self.model_type == ModelType.MISTRAL_7B:
+        if (self.model_type == ModelType.MISTRAL_7B
+            or self.model_type == ModelType.MISTRAL_LARGE):
             self._client = MistralClient()
         else:
             url = os.environ.get('OPENAI_API_BASE_URL', None)
