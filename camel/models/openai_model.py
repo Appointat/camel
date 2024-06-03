@@ -38,11 +38,15 @@ class OpenAIModel(BaseModelBackend):
                 be fed into openai.ChatCompletion.create().
         """
         super().__init__(model_type, model_config_dict)
-        from mistralai.client import MistralClient
         from camel.types import ModelType
         if (self.model_type == ModelType.MISTRAL_7B
             or self.model_type == ModelType.MISTRAL_LARGE):
+            from mistralai.client import MistralClient
             self._client = MistralClient()
+        elif (self.model_type == ModelType.GROQ_LLAMA3_8_B
+              or self.model_type == ModelType.GROQ_LLAMA3_70_B):
+            from groq import Groq
+            self._client = Groq(api_key=os.environ.get('GROQ_API_KEY', None))
         else:
             url = os.environ.get('OPENAI_API_BASE_URL', None)
             self._client = OpenAI(timeout=60, max_retries=3, base_url=url)
@@ -80,6 +84,13 @@ class OpenAIModel(BaseModelBackend):
         if (self.model_type == ModelType.MISTRAL_7B
             or self.model_type == ModelType.MISTRAL_LARGE):
             response = self._client.chat(
+                messages=messages,
+                model=self.model_type.value,
+                # **self.model_config_dict,
+            )
+        elif (self.model_type == ModelType.GROQ_LLAMA3_8_B
+                or self.model_type == ModelType.GROQ_LLAMA3_70_B):
+            response = self._client.chat.completions.create(
                 messages=messages,
                 model=self.model_type.value,
                 # **self.model_config_dict,

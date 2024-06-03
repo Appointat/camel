@@ -31,6 +31,8 @@ class ModelType(Enum):
     GPT_4O = "gpt-4o"
     MISTRAL_7B = "open-mistral-7b"
     MISTRAL_LARGE = "mistral-large-latest"
+    GROQ_LLAMA3_8_B = "llama3-8b-8192"
+    GROQ_LLAMA3_70_B = "llama3-70b-8192"
 
     STUB = "stub"
 
@@ -64,6 +66,8 @@ class ModelType(Enum):
             ModelType.GPT_4O,
             ModelType.MISTRAL_7B,
             ModelType.MISTRAL_LARGE,
+            ModelType.GROQ_LLAMA3_8_B,
+            ModelType.GROQ_LLAMA3_70_B,
         }
 
     @property
@@ -110,6 +114,10 @@ class ModelType(Enum):
         elif self is ModelType.MISTRAL_7B:
             return 32768
         elif self is ModelType.MISTRAL_LARGE:
+            return 32768
+        elif self is ModelType.GROQ_LLAMA3_8_B:
+            return 32768
+        elif self is ModelType.GROQ_LLAMA3_70_B:
             return 32768
         elif self is ModelType.STUB:
             return 4096

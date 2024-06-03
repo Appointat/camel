@@ -314,8 +314,14 @@ class ChatAgent(BaseAgent):
             response = self.model_backend.run(openai_messages)
 
             from camel.types import ModelType
-            if (self.model_type != ModelType.MISTRAL_7B
-                and self.model_type != ModelType.MISTRAL_LARGE):
+            if (self.model_type == ModelType.MISTRAL_7B
+                or self.model_type == ModelType.MISTRAL_LARGE
+                or self.model_type == ModelType.GROQ_LLAMA3_8_B
+                or self.model_type == ModelType.GROQ_LLAMA3_70_B):
+                output_messages, finish_reasons, usage_dict, response_id = (
+                    self.handle_batch_response(response)
+                )
+            else:
                 if isinstance(response, ChatCompletion):
                     output_messages, finish_reasons, usage_dict, response_id = (
                         self.handle_batch_response(response)
@@ -324,10 +330,6 @@ class ChatAgent(BaseAgent):
                     output_messages, finish_reasons, usage_dict, response_id = (
                         self.handle_stream_response(response, num_tokens)
                     )
-            else:
-                output_messages, finish_reasons, usage_dict, response_id = (
-                    self.handle_batch_response(response)
-                )
 
             if (
                 self.is_function_calling_enabled()
