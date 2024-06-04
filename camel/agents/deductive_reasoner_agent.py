@@ -188,7 +188,6 @@ Given the starting state $A$ and the target state $B$, assuming that a path $L$ 
                 "Deduction failed. Error:\n" + f"{response.info}"
             )
         msg: BaseMessage = response.msg
-        print(f"Message content:\n{msg.content}")
 
         # Extract the conditions from the message
         condistions_dict = {
