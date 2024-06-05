@@ -97,6 +97,7 @@ We share a common interest in collaborating to successfully complete the task by
     4. The "Instruction" should outline a specific subtask, provided one at a time. You should instruct me not ask me questions. And make sure the "Instruction" you provided is not reapeated in the privous conversation. One instruction one time.
     5. The "Input" provides the current statut and known information/data for the requested "Instruction".
     6. Instruct until task completion. Once you comfire or decide to complete the TASK, you MUST use the "CAMEL_TASK_DONE" in English terminate the TASK. Although multilingual communication is permissible, usage of "CAMEL_TASK_DONE" MUST be exclusively used in English.
+    7. Knowing that our conversation will be read by a third party, please instruct me to summarize the final answer for TASK (the content can be in any form).
 
 ===== TASK =====
 {task}
