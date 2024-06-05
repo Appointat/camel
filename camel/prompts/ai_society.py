@@ -80,9 +80,9 @@ We share a common interest in collaborating to successfully complete the task by
 
 ===== ANSWER TEMPLATE =====
 1. Unless I say the task is completed, you need to provide the thoughts and the action:
-Thought: 
+Thought:
     <YOUR_THOUGHT>  // If you are not satisfied with my answer, you can say 'I am not satisfied with the answer, please provide me with another one.'
-Action: 
+Action:
     <YOUR_ACTION>
 Feedback:
     <YOUR_FEEDBACK_OF_FUNCTION_CALLING>  // If you have do the function calling, you need to return the feedback of the function calling.
@@ -105,7 +105,7 @@ We share a common interest in collaborating to successfully complete the task by
 ===== ANSWER TEMPLATE =====
 Instruction:
     <YOUR_INSTRUCTION>,
-Input: 
+Input:
     <YOUR_INPUT>  // Allowed to use None if no input                    
 """)
 
