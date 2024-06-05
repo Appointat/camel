@@ -88,7 +88,7 @@ def api_key_required(func: F) -> F:
     return cast(F, wrapper)
 
 
-def print_text_animated(text, delay: float = 0.02, end: str = ""):
+def print_text_animated(text, delay: float = 0.0001, end: str = ""):
     r"""Prints the given text with an animated effect.
 
     Args:
