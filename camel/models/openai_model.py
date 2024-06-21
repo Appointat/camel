@@ -19,7 +19,14 @@ from openai import OpenAI, Stream
 from camel.configs import OPENAI_API_PARAMS_WITH_FUNCTIONS
 from camel.messages import OpenAIMessage
 from camel.models import BaseModelBackend
-from camel.types import ChatCompletion, ChatCompletionChunk, ModelType
+from camel.types import (
+    ChatCompletion,
+    ChatCompletionChunk,
+    ChatCompletionMessage,
+    Choice,
+    CompletionUsage,
+    ModelType,
+)
 from camel.utils import BaseTokenCounter, OpenAITokenCounter, api_key_required
 
 
@@ -39,13 +46,24 @@ class OpenAIModel(BaseModelBackend):
         """
         super().__init__(model_type, model_config_dict)
         from camel.types import ModelType
-        if (self.model_type == ModelType.MISTRAL_7B
-            or self.model_type == ModelType.MISTRAL_LARGE):
+
+        if (
+            self.model_type == ModelType.MISTRAL_7B
+            or self.model_type == ModelType.MISTRAL_LARGE
+        ):
             from mistralai.client import MistralClient
+
             self._client = MistralClient()
-        elif (self.model_type == ModelType.GROQ_LLAMA3_8_B
-              or self.model_type == ModelType.GROQ_LLAMA3_70_B):
+        elif self.model_type == ModelType.CLAUDE_3_5_SONNET:
+            import anthropic
+
+            self._client = anthropic.Anthropic()
+        elif (
+            self.model_type == ModelType.GROQ_LLAMA3_8_B
+            or self.model_type == ModelType.GROQ_LLAMA3_70_B
+        ):
             from groq import Groq
+
             self._client = Groq(api_key=os.environ.get('GROQ_API_KEY', None))
         else:
             url = os.environ.get('OPENAI_API_BASE_URL', None)
@@ -81,15 +99,57 @@ class OpenAIModel(BaseModelBackend):
                 `Stream[ChatCompletionChunk]` in the stream mode.
         """
         from camel.types import ModelType
-        if (self.model_type == ModelType.MISTRAL_7B
-            or self.model_type == ModelType.MISTRAL_LARGE):
+
+        if (
+            self.model_type == ModelType.MISTRAL_7B
+            or self.model_type == ModelType.MISTRAL_LARGE
+        ):
             response = self._client.chat(
                 messages=messages,
                 model=self.model_type.value,
                 # **self.model_config_dict,
             )
-        elif (self.model_type == ModelType.GROQ_LLAMA3_8_B
-                or self.model_type == ModelType.GROQ_LLAMA3_70_B):
+        elif self.model_type == ModelType.CLAUDE_3_5_SONNET:
+            anthropic_response = self._client.messages.create(
+                system=messages[0]['content'],
+                messages=messages[1:],  # the second message to the end
+                model=self.model_type.value,
+                max_tokens=self.model_config_dict.get('max_tokens', 4096),
+                # **self.model_config_dict,
+            )
+
+            response = ChatCompletion(
+                id=anthropic_response.id,
+                choices=[
+                    Choice(
+                        finish_reason='stop',
+                        index=index,
+                        logprobs=None,
+                        message=ChatCompletionMessage(
+                            content=choice.text,
+                            role=anthropic_response.role,
+                            function_call=None,
+                        ),
+                    )
+                    for index, choice in enumerate(anthropic_response.content)
+                ],
+                created=0,  # TODO: get the real timestamp
+                model=anthropic_response.model,
+                object='chat.completion',
+                system_fingerprint='0',  # TODO: get the real fingerprint
+                usage=CompletionUsage(
+                    completion_tokens=anthropic_response.usage.output_tokens,
+                    prompt_tokens=anthropic_response.usage.input_tokens,
+                    total_tokens=(
+                        anthropic_response.usage.output_tokens
+                        + anthropic_response.usage.input_tokens
+                    ),
+                ),
+            )
+        elif (
+            self.model_type == ModelType.GROQ_LLAMA3_8_B
+            or self.model_type == ModelType.GROQ_LLAMA3_70_B
+        ):
             response = self._client.chat.completions.create(
                 messages=messages,
                 model=self.model_type.value,
