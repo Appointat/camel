@@ -31,6 +31,7 @@ class ModelType(Enum):
     GPT_4O = "gpt-4o"
     MISTRAL_7B = "open-mistral-7b"
     MISTRAL_LARGE = "mistral-large-latest"
+    CLAUDE_3_5_SONNET = "claude-3-5-sonnet-20240620"
     GROQ_LLAMA3_8_B = "llama3-8b-8192"
     GROQ_LLAMA3_70_B = "llama3-70b-8192"
 
@@ -66,6 +67,7 @@ class ModelType(Enum):
             ModelType.GPT_4O,
             ModelType.MISTRAL_7B,
             ModelType.MISTRAL_LARGE,
+            ModelType.CLAUDE_3_5_SONNET,
             ModelType.GROQ_LLAMA3_8_B,
             ModelType.GROQ_LLAMA3_70_B,
         }
@@ -111,6 +113,8 @@ class ModelType(Enum):
             return 128000
         elif self is ModelType.GPT_4O:
             return 128000
+        elif self is ModelType.CLAUDE_3_5_SONNET:
+            return 32768
         elif self is ModelType.MISTRAL_7B:
             return 32768
         elif self is ModelType.MISTRAL_LARGE:
