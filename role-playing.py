@@ -20,24 +20,47 @@ from camel.utils import print_text_animated
 
 
 def main(model_type=None) -> None:
+    from camel.types import ModelType
+
+    model_type = ModelType.GPT_4O
     task_prompt = "Develop a trading bot for the stock market"
 
+    task_prompt = """
+主题是开放性、崎岖的、发散性的、科研性的思维上的探索：“聊聊AI agent（基于LLM）得到了全行业的关注，而不再只是资本的对局”，这是一个很难的议题，需要你做非常复杂的长期思考（你的回答要体现出这个议题的难度）。
+    
+你（作者）也很聪明和优秀，在语言表达上你的文章可能具备下面的特点：
+1. 深度知识概念：这些知识点是不常见的且高深的，而且你喜欢在文章中使用该行业黑话，来精练你的表达。
+2. 逻辑性强：理工科背景的作者通常习惯于逻辑严谨的思维方式。文章的结构往往条理清晰，逻辑性强，能够合理地引导读者理解复杂的概念或论点。
+3. 创新和独到的见解：智力水平高的人往往能在常人未曾注意的地方发现新问题，提出新观点。文章中可能包含一些创新的想法或独到的解决方案，这些都能体现作者的智慧。
+4. 精确的用语：用语往往非常精确，尽量避免歧义。
+5. 数据支持：聪明的作者会通过引用数据来支持自己的观点。
+6. 复杂问题的简洁阐述：能够将复杂的问题简洁明了地阐述出来是智慧的一种表现。
+7. 对未来趋势的预见：文章可能会对未来的技术或学术发展趋势提供见解，这不仅体现了作者的前瞻性思维，也可能吸引那些对未来发展感兴趣的读者。
+8. 你天生因为自我优秀而骄傲。
+"""
+
+    task_prompt = """
+Mathematics Problem:
+Let m be a positive integer. The sequence a₁, a₂, ..., a₄ₘ₊₂ is an arithmetic sequence with a common difference that is not zero. If after removing any two terms aᵢ, aⱼ (i < j), the remaining 4m terms can be divided into m groups of 4 terms each, where each group forms an arithmetic sequence, then the original sequence is called a (i, j) separable sequence.
+For any two numbers i < j from 1 to 4m + 2, prove that the probability pₘ that the sequence is (i, j) separable is greater than 1/8.
+"""
     agent_kwargs = {
         role: dict(
             model_type=model_type,
-            model_config=ChatGPTConfig(max_tokens=4096),
+            model_config=ChatGPTConfig(max_tokens=4096, temperature=0.7),
         )
         for role in ["assistant", "user", "task-specify"]
     }
 
     role_play_session = RolePlaying(
-        assistant_role_name="Python Programmer",
+        assistant_role_name="Math Student",
         assistant_agent_kwargs=agent_kwargs["assistant"],
-        user_role_name="Stock Trader",
+        user_role_name="Math Student",
         user_agent_kwargs=agent_kwargs["user"],
         task_prompt=task_prompt,
         with_task_specify=False,
         task_specify_agent_kwargs=agent_kwargs["task-specify"],
+        output_language="Chinese",
     )
 
     print(
