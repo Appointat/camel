@@ -13,7 +13,8 @@
 # =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
 from colorama import Fore
 
-from camel.configs import ChatGPTConfig
+from camel.configs import FunctionCallingConfig
+from camel.functions import ROLE_PLAYING_FUNS
 from camel.societies import RolePlaying
 from camel.types import ModelType
 from camel.utils import print_text_animated
@@ -22,7 +23,7 @@ from camel.utils import print_text_animated
 def main(model_type=None) -> None:
     from camel.types import ModelType
 
-    model_type = ModelType.GPT_4O
+    model_type = ModelType.GPT_4_TURBO
     task_prompt = "Develop a trading bot for the stock market"
 
     task_prompt = """
@@ -40,14 +41,27 @@ def main(model_type=None) -> None:
 """
 
     task_prompt = """
-Mathematics Problem:
-Let m be a positive integer. The sequence a₁, a₂, ..., a₄ₘ₊₂ is an arithmetic sequence with a common difference that is not zero. If after removing any two terms aᵢ, aⱼ (i < j), the remaining 4m terms can be divided into m groups of 4 terms each, where each group forms an arithmetic sequence, then the original sequence is called a (i, j) separable sequence.
-For any two numbers i < j from 1 to 4m + 2, prove that the probability pₘ that the sequence is (i, j) separable is greater than 1/8.
+数学问题，给定:
+1. 一个长度为 4m+2 的等差数列 S (m 为正整数)
+2. 从 S 中随机删除两项后,剩余 4m 项
+
+定义:
+如果剩余的 4m 项可以被分成 m 组,每组 4 项且每组形成等差数列,则称原数列 S 为"可分离的"。
+证明:
+S 为"可分离的"的概率 p_m > 1/8。
+
+Suggest to call the role_playing_function to help solve the task.
 """
+
+    function_list = [*ROLE_PLAYING_FUNS]
     agent_kwargs = {
         role: dict(
             model_type=model_type,
-            model_config=ChatGPTConfig(max_tokens=4096, temperature=0.7),
+            model_config=FunctionCallingConfig.from_openai_function_list(
+                function_list=function_list,
+                kwargs=dict(max_tokens=4096, temperature=0.7),
+            ),
+            function_list=function_list,
         )
         for role in ["assistant", "user", "task-specify"]
     }
@@ -112,7 +126,10 @@ For any two numbers i < j from 1 to 4m + 2, prove that the probability pₘ that
             0.001,
         )
 
-        if "CAMEL_TASK_DONE" in user_response.msg.content:
+        if (
+            "CAMEL_TASK_DONE" in user_response.msg.content
+            or "CAMEL_TASK_DONE" in assistant_response.msg.content
+        ):
             break
 
         input_msg = assistant_response.msg
