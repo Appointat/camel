@@ -22,6 +22,7 @@ from .google_maps_function import MAP_FUNCS
 from .math_functions import MATH_FUNCS
 from .open_api_function import OPENAPI_FUNCS
 from .retrieval_functions import RETRIEVAL_FUNCS
+from .role_playing_function import ROLE_PLAYING_FUNS
 from .search_functions import SEARCH_FUNCS
 from .twitter_function import TWITTER_FUNCS
 from .weather_functions import WEATHER_FUNCS
@@ -34,6 +35,7 @@ __all__ = [
     'MATH_FUNCS',
     'OPENAPI_FUNCS',
     'RETRIEVAL_FUNCS',
+    'ROLE_PLAYING_FUNS',
     'SEARCH_FUNCS',
     'TWITTER_FUNCS',
     'WEATHER_FUNCS',
