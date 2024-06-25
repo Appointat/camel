@@ -440,7 +440,7 @@ class RolePlaying:
         self.user_agent.reset()
         default_init_msg_content = (
             "Now start to give me instructions one by one. "
-            "Only reply with Instruction and Input."
+            "Only reply with Instruction, Input etc."
         )
         if init_msg_content is None:
             init_msg_content = default_init_msg_content
