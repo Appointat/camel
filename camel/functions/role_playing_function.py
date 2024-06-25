@@ -112,11 +112,8 @@ def role_playing_function(
 
         input_msg = assistant_response.msg
 
-    assistant_last_2_message_records = (
-        role_play_session.assistant_agent.memory.retrieve()[-4:]
-    )
     assistant_reply: str = task_prompt + "\n"
-    for record in assistant_last_2_message_records:
+    for record in role_play_session.assistant_agent.memory.retrieve()[-4:]:
         assistant_reply += (
             record.memory_record.message.content.replace("CAMEL_TASK_DONE", "")
             + "\n"
