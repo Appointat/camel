@@ -17,7 +17,6 @@ from colorama import Fore
 
 from camel.configs import ChatGPTConfig
 from camel.functions.openai_function import OpenAIFunction
-from camel.societies import RolePlaying
 from camel.types import ModelType
 from camel.utils import print_text_animated
 
@@ -43,6 +42,8 @@ def role_playing_function(
     Returns:
         str: The response for the task.
     """
+    from camel.societies import RolePlaying
+
     print_text_animated(
         Fore.YELLOW + "Apply role-playing to resolve the subtask:\n"
         f"{task_prompt}\n"
